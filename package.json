@@ -20,6 +20,6 @@
     "babel-preset-react": "^6.24.1",
     "file-loader": "^6.0.0",
     "webpack": "^3.10.0",
-    "webpack-dev-server": "^2.9.7"
+    "webpack-dev-server": "^3.1.11"
   }
 }
