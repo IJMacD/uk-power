@@ -20,6 +20,13 @@ module.exports = {
                         presets: ['env']
                     }
                 }
+            },
+            {
+                test: /\.(png|gif|jpe?g|svg)$/,
+                exclude: /(node_modules|bower_components|build)/,
+                use: {
+                    loader: 'file-loader',
+                }
             }
         ]
     },

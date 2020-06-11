@@ -1,5 +1,5 @@
 import React from 'react'
-import ukmap from '../img/uk.png';
+import ukmap from '../img/map.svg';
 
 const FRAME_RATE = 20;
 
@@ -31,7 +31,7 @@ const interconnects = [
   },
   {
     code: "WIND",
-    path: "M370 170 L270 280",
+    path: "M340 130 L220 220",
     width: 4,
   },
   {
@@ -42,6 +42,26 @@ const interconnects = [
   {
     code: "NUCLEAR",
     path: "M100 100 L170 190",
+    width: 4,
+  },
+  {
+    code: "CCGT",
+    path: "M390 340 L300 360",
+    width: 4,
+  },
+  {
+    code: "BIOMASS",
+    path: "M120 440 L200 460",
+    width: 4,
+  },
+  {
+    code: "COAL",
+    path: "M350 240 L270 270",
+    width: 4,
+  },
+  {
+    code: "OIL",
+    path: "M260 520 L270 475",
     width: 4,
   }
 ];
@@ -76,19 +96,22 @@ const App = () => {
   }, [sources]);
 
   return <div style={{display:"flex"}}>
-    <h3>Sources:</h3>
-    <ul>
-    {
-      sources.map(s => <li key={s.code} title={s.code}>{s.name}: {s.value} GW</li>)
-    }
-    </ul>    
+    <div>
+      UK Time: {new Date().toLocaleString("en-GB", { timeZone: "Europe/London" })}
+      <h3>Sources:</h3>
+      <ul>
+      {
+        sources.map(s => <li key={s.code} title={s.code}>{s.name}: {s.value} GW</li>)
+      }
+      </ul>
+    </div>  
     <svg viewBox="0 0 440 600" width={440}>
       <image href={ukmap} />
       {
         interconnects.map((ic,i) => {
           return <React.Fragment key={ic.code}>
-            <path d={ic.path} title={ic.code} fill="none" stroke="darkblue" strokeWidth={ic.width+2} strokeLinecap="round" />
-            <path d={ic.path} fill="none" stroke="#00ff00" strokeWidth={ic.width} strokeLinecap="round" strokeDasharray={`1 ${2*ic.width}`} strokeDashoffset={-offsets[i]/ic.width} />
+            <path d={ic.path} fill="none" stroke="darkblue" strokeWidth={ic.width+2} strokeLinecap="round" />
+            <path d={ic.path} fill="none" stroke={offsets[i] === 0 ? "#ff3366" : "#00ff00"} strokeWidth={ic.width} strokeLinecap="round" strokeDasharray={`1 ${2*ic.width}`} strokeDashoffset={-offsets[i]/ic.width} />
           </React.Fragment>;
         })
       }

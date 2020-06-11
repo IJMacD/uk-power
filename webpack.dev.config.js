@@ -30,7 +30,7 @@ module.exports = {
                 }
             },
             {
-                test: /\.(png|gif|jpe?g)$/,
+                test: /\.(png|gif|jpe?g|svg)$/,
                 exclude: /(node_modules|bower_components|build)/,
                 use: {
                     loader: 'file-loader',
