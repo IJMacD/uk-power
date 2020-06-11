@@ -2,8 +2,10 @@ const http = require('http');
 const https = require('https');
 const port = process.env.PORT || 8000;
 
+const ONE_MINUTE = 60 * 1000;
+
 const server = http.createServer(async (request, response) => {
-    const body = await cachedFetch('https://gridwatch.co.uk/Demand');
+    const body = await cachedFetch('https://gridwatch.co.uk/Demand', 5 * ONE_MINUTE);
     const rawdata = parseBody(body);
 
     /* lgen:
@@ -25,6 +27,7 @@ const server = http.createServer(async (request, response) => {
             if (d.code === "MAINCALC") d.frequency = lg[7];
             return d;
         }),
+        date: rawdata.date,
         lgen: rawdata.lgen,
         lgr: rawdata.lgr,
         lgt: rawdata.lgt,
@@ -50,7 +53,6 @@ function fetch (url) {
 }
 
 const CACHE = {};
-const ONE_MINUTE = 60 * 1000;
 
 async function cachedFetch (url, timeout=10 * ONE_MINUTE) {
     if (CACHE[url]) {
@@ -69,7 +71,7 @@ async function cachedFetch (url, timeout=10 * ONE_MINUTE) {
 }
 
 function parseBody (data) {
-    let lgen, lgr = [], lgt = [];
+    let lgen, lgr = [], lgt = [], date = null;
 
     try {
         data  = data.replace(/'/g, '"');
@@ -89,6 +91,9 @@ function parseBody (data) {
             lgt.push(JSON.parse(c[1]));
         }
 
+        const d = /last update ([^<]*)/.exec(data);
+        date = new Date(d[1]);
+
     } catch (e) {
         console.log(e);
     }
@@ -97,5 +102,6 @@ function parseBody (data) {
         lgen,
         lgr,
         lgt,
+        date,
     };
 }

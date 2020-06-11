@@ -67,13 +67,14 @@ const interconnects = [
 ];
 
 const App = () => {
+  const [ updated, setUpdated ] = React.useState(null);
   const [ sources, setSources ] = React.useState([]);
   const [ offsets, setOffsets ] = React.useState(interconnects.map(_ => 0));
 
   React.useEffect(() => {
-    const f = () => fetch('http://localhost:8000').then(r => r.json()).then(d => setSources(d.sources));
+    const f = () => fetch('http://localhost:8000').then(r => r.json()).then(d => {setSources(d.sources); setUpdated(d.date);});
     f();
-    const id = setInterval(f, 10 * 60 * 1000);
+    const id = setInterval(f, 5 * 60 * 1000);
     return () => clearInterval(id);
   }, []);
 
@@ -97,7 +98,8 @@ const App = () => {
 
   return <div style={{display:"flex"}}>
     <div>
-      UK Time: {new Date().toLocaleString("en-GB", { timeZone: "Europe/London" })}
+      <p>UK Time: {new Date().toLocaleString("en-GB", { timeZone: "Europe/London" })}</p>
+      { updated && <p>Updated: {new Date(updated).toLocaleString("en-GB", { timeZone: "Europe/London" })}</p> }
       <h3>Sources:</h3>
       <ul>
       {
