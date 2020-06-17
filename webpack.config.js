@@ -1,10 +1,13 @@
 var path = require('path');
 var webpack = require('webpack');
+const CopyPlugin = require('copy-webpack-plugin');
+
+const buildDir = "output";
 
 module.exports = {
     entry: './src/index.js',
     output: {
-        path: path.resolve(__dirname, 'output'),
+        path: path.resolve(__dirname, buildDir),
         filename: 'bundle.min.js',
         libraryTarget: 'umd'
     },
@@ -49,6 +52,9 @@ module.exports = {
             output: {
                 comments: false,
             },
-        })
+        }),
+        new CopyPlugin([
+            { from: "public", to: path.resolve(__dirname, buildDir) },
+        ]),
     ]
 }

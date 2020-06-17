@@ -1,10 +1,30 @@
 const http = require('http');
 const https = require('https');
+const path = require("path");
+const fs = require('fs');
 const port = process.env.PORT || 8000;
 
 const ONE_MINUTE = 60 * 1000;
 
-const server = http.createServer(async (request, response) => {
+const server = http.createServer((request, response) => {
+    if (request.url === "/api") {
+        return sendDemand(response);
+    }
+
+    let filename = path.join(__dirname, "public", request.url);
+    if (!fs.existsSync(filename) || fs.lstatSync(filename).isDirectory()) {
+        filename = path.join(__dirname, "public", "index.html");
+    }
+
+    response.write(fs.readFileSync(filename));
+    response.end();
+    return;
+});
+
+/**
+ * @param {import("http").ServerResponse} response
+ */
+async function sendDemand (response) {
     const body = await cachedFetch('https://gridwatch.co.uk/Demand', 5 * ONE_MINUTE);
     const rawdata = parseBody(body);
 
@@ -37,7 +57,7 @@ const server = http.createServer(async (request, response) => {
     response.setHeader("Content-Type", "application/json");
     response.write(JSON.stringify(data));
     response.end();
-});
+}
 
 server.listen(port);
 console.log(`Listening on port ${port}`);
