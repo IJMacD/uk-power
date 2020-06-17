@@ -17,9 +17,14 @@ module.exports = {
                 use: {
                     loader: 'babel-loader',
                     options: {
-                        presets: ['env']
+                        presets: ['@babel/env']
                     }
                 }
+            },
+            {
+                test: /\.css$/,
+                exclude: /(node_modules|bower_components|build)/,
+                use: [ 'style-loader','css-loader'],
             },
             {
                 test: /\.(png|gif|jpe?g|svg)$/,

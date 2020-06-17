@@ -1,5 +1,8 @@
 import React from 'react'
 import ukmap from '../img/map.svg';
+import Query from 'ijmacd-query';
+
+import './App.css';
 
 const FRAME_RATE = 20;
 
@@ -31,7 +34,7 @@ const interconnects = [
   },
   {
     code: "WIND",
-    path: "M340 130 L220 220",
+    path: "M350 130 L250 180",
     width: 4,
   },
   {
@@ -46,7 +49,7 @@ const interconnects = [
   },
   {
     code: "CCGT",
-    path: "M390 340 L300 360",
+    path: "M370 340 L320 360",
     width: 4,
   },
   {
@@ -56,7 +59,7 @@ const interconnects = [
   },
   {
     code: "COAL",
-    path: "M350 240 L270 270",
+    path: "M340 235 L270 270",
     width: 4,
   },
   {
@@ -69,10 +72,23 @@ const interconnects = [
 const App = () => {
   const [ updated, setUpdated ] = React.useState(null);
   const [ sources, setSources ] = React.useState([]);
+  const [ inputs, setInputs ] = React.useState([]);
   const [ offsets, setOffsets ] = React.useState(interconnects.map(_ => 0));
 
   React.useEffect(() => {
-    const f = () => fetch('http://localhost:8000').then(r => r.json()).then(d => {setSources(d.sources); setUpdated(d.date);});
+    const f = () => fetch(API_URL).then(r => r.json()).then(async d => {
+
+      const sources = d.sources.map(s => s.code === "MAINCALC" ? { ...s, value: -s.value } : s);
+      
+      const q = new Query({ sources });
+
+      const results = await q.run("FROM sources SELECT code, name, value ORDER BY value DESC", { output: "objects" });
+      const inputs = await q.run("FROM sources WHERE code != 'RENEW' AND value > 0 SELECT code, name, value ORDER BY value DESC", { output: "objects" });
+
+      setSources(results);
+      setInputs(inputs);
+      setUpdated(d.date);
+    });
     f();
     const id = setInterval(f, 5 * 60 * 1000);
     return () => clearInterval(id);
@@ -96,6 +112,8 @@ const App = () => {
     return () => clearInterval(id);
   }, [sources]);
 
+  const demand = sources.find(s => s.code === 'MAINCALC');
+
   return <div style={{display:"flex"}}>
     <div>
       <p>UK Time: {new Date().toLocaleString("en-GB", { timeZone: "Europe/London" })}</p>
@@ -118,6 +136,14 @@ const App = () => {
         })
       }
     </svg>
+    <div>
+      <div style={{display:"flex"}}>
+        {
+          inputs.map(s => <div style={{width:25*s.value}} className="source-block" title={`${s.name}: ${s.value}`}>{s.name}</div>)
+        }
+      </div>
+      { demand && <div style={{width:25*demand.value}} className="source-block" title={`${demand.name}: ${demand.value}`}>{demand.name}</div> }
+    </div>
   </div>
 }
 

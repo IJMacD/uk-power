@@ -1,0 +1,8 @@
+.source-block {
+    height: 25px;
+    border-radius: 5px;
+    border: 1px solid #00000040;
+    padding: 4px;
+    overflow: hidden;
+    box-sizing: border-box;
+}

@@ -1,4 +1,5 @@
 var path = require('path');
+var webpack = require('webpack');
 
 module.exports = {
     entry: './src/index.js',
@@ -25,9 +26,14 @@ module.exports = {
                 use: {
                     loader: 'babel-loader',
                     options: {
-                        presets: ['env']
+                        presets: ['@babel/env']
                     }
                 }
+            },
+            {
+                test: /\.css$/,
+                exclude: /(node_modules|bower_components|build)/,
+                use: [ 'style-loader','css-loader'],
             },
             {
                 test: /\.(png|gif|jpe?g|svg)$/,
@@ -37,5 +43,13 @@ module.exports = {
                 }
             }
         ]
-    }
+    },
+
+    plugins: [
+       new webpack.DefinePlugin({
+           "process.env": { 
+               APP_ENV: JSON.stringify("browser") 
+           }
+       }),
+    ]
 }
