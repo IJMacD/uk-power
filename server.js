@@ -16,6 +16,10 @@ const server = http.createServer((request, response) => {
         filename = path.join(__dirname, "public", "index.html");
     }
 
+    if (filename.match(/\.svg$/)) {
+        response.setHeader("Content-Type", "image/svg+xml");
+    }
+
     response.write(fs.readFileSync(filename));
     response.end();
     return;
