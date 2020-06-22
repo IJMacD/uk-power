@@ -131,9 +131,10 @@ const App = () => {
       <image href={ukmap} />
       {
         interconnects.map((ic,i) => {
+          const source = sources.find(s => s.code === ic.code);
           return <React.Fragment key={ic.code}>
             <path d={ic.path} fill="none" stroke="darkblue" strokeWidth={ic.width+2} strokeLinecap="round" />
-            <path d={ic.path} fill="none" stroke={offsets[i] === 0 ? "#ff3366" : "#00ff00"} strokeWidth={ic.width} strokeLinecap="round" strokeDasharray={`1 ${2*ic.width}`} strokeDashoffset={-offsets[i]/ic.width} />
+            <path d={ic.path} fill="none" stroke={!source || source.value === 0 ? "#ff3366" : "#00ff00"} strokeWidth={ic.width} strokeLinecap="round" strokeDasharray={`1 ${2*ic.width}`} strokeDashoffset={-offsets[i]/ic.width} />
           </React.Fragment>;
         })
       }
