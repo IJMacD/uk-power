@@ -72,16 +72,16 @@ const interconnects = [
 ];
 
 const App = () => {
-  const [ updated, setUpdated ] = React.useState(null);
-  const [ sources, setSources ] = React.useState([]);
-  const [ inputs, setInputs ] = React.useState([]);
-  const [ offsets, setOffsets ] = React.useState(interconnects.map(_ => 0));
+  const [updated, setUpdated] = React.useState(null);
+  const [sources, setSources] = React.useState([]);
+  const [inputs, setInputs] = React.useState([]);
+  const [offsets, setOffsets] = React.useState(interconnects.map(_ => 0));
 
   React.useEffect(() => {
     const f = () => fetch(API_URL).then(r => r.json()).then(async d => {
 
       const sources = d.sources.map(s => s.code === "MAINCALC" ? { ...s, value: -s.value } : s);
-      
+
       const q = new Query({ sources });
 
       const results = await q.run("FROM sources SELECT code, name, value ORDER BY value DESC", { output: "objects" });
@@ -116,36 +116,36 @@ const App = () => {
 
   const demand = sources.find(s => s.code === 'MAINCALC');
 
-  return <div style={{display:"flex"}}>
+  return <div>
     <div>
       <p>UK Time: {new Date().toLocaleString("en-GB", { timeZone: "Europe/London" })}</p>
-      { updated && <p>Updated: {new Date(updated).toLocaleString("en-GB", { timeZone: "Europe/London" })}</p> }
+      {updated && <p>Updated: {new Date(updated).toLocaleString("en-GB", { timeZone: "Europe/London" })}</p>}
       <h3>Sources:</h3>
       <ul>
-      {
-        sources.map(s => <li key={s.code} title={s.code}>{s.name}: {s.value} GW</li>)
-      }
+        {
+          sources.map(s => <li key={s.code} title={s.code}>{s.name}: {s.value} GW</li>)
+        }
       </ul>
-    </div>  
+    </div>
     <svg viewBox="0 0 440 600" width={440}>
       <image href={ukmap} />
       {
-        interconnects.map((ic,i) => {
+        interconnects.map((ic, i) => {
           const source = sources.find(s => s.code === ic.code);
           return <React.Fragment key={ic.code}>
-            <path d={ic.path} fill="none" stroke="darkblue" strokeWidth={ic.width+2} strokeLinecap="round" />
-            <path d={ic.path} fill="none" stroke={!source || source.value === 0 ? "#ff3366" : "#00ff00"} strokeWidth={ic.width} strokeLinecap="round" strokeDasharray={`1 ${2*ic.width}`} strokeDashoffset={-offsets[i]/ic.width} />
+            <path d={ic.path} fill="none" stroke="darkblue" strokeWidth={ic.width + 2} strokeLinecap="round" />
+            <path d={ic.path} fill="none" stroke={!source || source.value === 0 ? "#ff3366" : "#00ff00"} strokeWidth={ic.width} strokeLinecap="round" strokeDasharray={`1 ${2 * ic.width}`} strokeDashoffset={-offsets[i] / ic.width} />
           </React.Fragment>;
         })
       }
     </svg>
     <div>
-      <div style={{display:"flex"}}>
+      <div style={{ display: "flex" }}>
         {
-          inputs.map(s => <div style={{width:25*s.value}} className="source-block" title={`${s.name}: ${s.value}`}>{s.name}</div>)
+          inputs.map(s => <div style={{ width: 25 * s.value }} className="source-block" title={`${s.name}: ${s.value}`}>{s.name}</div>)
         }
       </div>
-      { demand && <div style={{width:25*demand.value}} className="source-block" title={`${demand.name}: ${demand.value}`}>{demand.name}</div> }
+      {demand && <div style={{ width: 25 * demand.value }} className="source-block" title={`${demand.name}: ${demand.value}`}>{demand.name}</div>}
     </div>
   </div>
 }

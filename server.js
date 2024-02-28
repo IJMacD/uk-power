@@ -28,7 +28,7 @@ const server = http.createServer((request, response) => {
 /**
  * @param {import("http").ServerResponse} response
  */
-async function sendDemand (response) {
+async function sendDemand(response) {
     const body = await cachedFetch('https://gridwatch.co.uk/Demand', 5 * ONE_MINUTE);
     const rawdata = parseBody(body);
 
@@ -66,7 +66,7 @@ async function sendDemand (response) {
 server.listen(port);
 console.log(`Listening on port ${port}`);
 
-function fetch (url) {
+function fetch(url) {
     return new Promise(resolve => {
         https.get(url, res => {
             let buf = "";
@@ -78,7 +78,7 @@ function fetch (url) {
 
 const CACHE = {};
 
-async function cachedFetch (url, timeout=10 * ONE_MINUTE) {
+async function cachedFetch(url, timeout = 10 * ONE_MINUTE) {
     if (CACHE[url]) {
         const { data, ttl } = CACHE[url];
         if (Date.now() < ttl) return data;
@@ -94,29 +94,22 @@ async function cachedFetch (url, timeout=10 * ONE_MINUTE) {
     return data;
 }
 
-function parseBody (data) {
+function parseBody(data) {
+    const match = /gp='([^']*)'/.exec(data);
+
     let lgen, lgr = [], lgt = [], date = null;
 
     try {
-        data  = data.replace(/'/g, '"');
 
-        const a = /lgen=(.*?);/.exec(data);
-        lgen = JSON.parse(a[1]);
+        if (match) {
+            const json = JSON.parse(match[1]);
 
-        const re = /lgr\[\d+\]=(.*?);/g;
-        let b;
-        while(b = re.exec(data)) {
-            lgr.push(JSON.parse(b[1]));
+            lgen = json.lgen;
+            lgr = json.lgr;
+            lgt = json.lgt;
+            // TODO: Not sure if time is local time or UTC
+            date = new Date(json.update.replace(" ", "T") + "Z");
         }
-
-        const re2 = /lgt\[\d+\]=(.*?);/g;
-        let c;
-        while(c = re2.exec(data)) {
-            lgt.push(JSON.parse(c[1]));
-        }
-
-        const d = /last update ([^<]*)/.exec(data);
-        date = new Date(d[1]);
 
     } catch (e) {
         console.log(e);
