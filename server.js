@@ -7,6 +7,8 @@ const port = process.env.PORT || 8000;
 const ONE_MINUTE = 60 * 1000;
 
 const server = http.createServer((request, response) => {
+    console.log(new Date().toISOString() + " " + request.url);
+
     if (request.url === "/api") {
         return sendDemand(response);
     }

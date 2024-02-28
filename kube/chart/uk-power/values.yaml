@@ -1,0 +1,9 @@
+hostname: uk-power.ijmacd.com
+web:
+  replicaCount: 1
+  repository:
+    image: docker.io/ijmacd/uk-power
+  tls:
+    enabled: false
+  local:
+    enabled: false
