@@ -3,7 +3,9 @@ FROM node:12 AS react-build
 WORKDIR /app
 COPY package.json yarn.lock ./
 RUN yarn install --frozen-lockfile
-COPY . .
+COPY ./public/ ./public/
+COPY ./src/ ./src/
+COPY ./webpack.config.js ./.babelrc ./
 RUN yarn build
 
 # Server
