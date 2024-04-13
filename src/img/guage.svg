@@ -1,0 +1,35 @@
+<svg width="53.181mm" height="26.723mm" version="1.1" viewBox="0 0 53.181 26.723" xmlns="http://www.w3.org/2000/svg">
+ <g stroke-linejoin="round">
+  <g fill="none">
+   <rect x=".13229" y=".13229" width="52.917" height="26.458" stroke="#000" stroke-linecap="round" stroke-width=".26458"/>
+   <path d="m7.1161 23.416a19.475 19.475 0 0 1 19.475-19.475 19.475 19.475 0 0 1 19.475 19.475" stroke="#e79696" stroke-linecap="round" stroke-width="4"/>
+   <path d="m9.7252 13.678a19.475 19.475 0 0 1 16.865-9.7373 19.475 19.475 0 0 1 16.865 9.7373" stroke="#eaea5c" stroke-width="4"/>
+  </g>
+  <g transform="translate(-26.291 -23.996)" display="none" fill="none" stroke="#000" stroke-linecap="round" stroke-width=".26">
+   <path d="m39.111 33.641 13.771 13.771 13.771-13.771" display="inline"/>
+   <path d="m34.071 42.371 18.811 5.0404 18.811-5.0404" display="inline"/>
+   <path d="m47.842 28.601 5.0404 18.811 5.0404-18.811" display="inline"/>
+   <path d="m43.145 30.546 9.7373 16.865 9.7373-16.865" display="inline"/>
+   <path d="m36.017 37.674 16.865 9.7373 16.865-9.7373" display="inline"/>
+   <path d="m33.407 47.412h38.949" display="inline"/>
+   <path d="m52.882 47.412v-19.475" display="inline"/>
+  </g>
+  <g fill="none">
+   <path d="m16.853 6.5502a19.475 19.475 0 0 1 19.475 4e-7" stroke="#5b5" stroke-width="4"/>
+   <path d="m5.1239 23.416h3.9647" stroke="#000" stroke-linecap="round" stroke-width=".26"/>
+   <path d="m26.591 5.826v-3.8172" stroke="#000" stroke-linecap="round" stroke-width=".26"/>
+  </g>
+  <g stroke="#000" stroke-linecap="round">
+   <circle cx="26.591" cy="23.416" r=".98632" display="none" fill="#f00" stroke-width=".26458"/>
+   <path d="m44.068 23.416h3.9845" fill="none" stroke-width=".26"/>
+   <path transform="translate(-26.291 -23.996)" d="m42.109 28.822 2.0364 3.4552m17.49-0.01598 1.966-3.435" fill="none" stroke-width=".26"/>
+  </g>
+  <path d="m26.591 3.9411 1.5688 19.475-1.5218 2.3912-1.6157-2.3912z" stroke-width=".26"/>
+  <g fill="#000000" font-family="'Eras Bold ITC'" font-size="2.1167px" letter-spacing="-.11377px" stroke-width=".26" text-anchor="end">
+   <text x="15.357266" y="4.4279485" text-align="end" style="line-height:1.1" xml:space="preserve"><tspan x="15.243496" y="4.4279485" fill="#000000" stroke-width=".26">-1%</tspan></text>
+   <text x="4.4636593" y="23.60956" text-align="end" style="line-height:1.1" xml:space="preserve"><tspan x="4.3498883" y="23.60956" fill="#000000" stroke-width=".26">-3%</tspan></text>
+   <text x="42.344765" y="4.4279485" text-align="end" style="line-height:1.1" xml:space="preserve"><tspan x="42.230995" y="4.4279485" fill="#000000" stroke-width=".26">+1%</tspan></text>
+   <text x="52.617828" y="23.60956" text-align="end" style="line-height:1.1" xml:space="preserve"><tspan x="52.504059" y="23.60956" fill="#000000" stroke-width=".26">+3%</tspan></text>
+  </g>
+ </g>
+</svg>

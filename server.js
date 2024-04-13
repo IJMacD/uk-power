@@ -68,6 +68,9 @@ async function sendDemand(response) {
 server.listen(port);
 console.log(`Listening on port ${port}`);
 
+/**
+ * @param {string} url
+ */
 function fetch(url) {
     return new Promise(resolve => {
         https.get(url, res => {
@@ -80,6 +83,9 @@ function fetch(url) {
 
 const CACHE = {};
 
+/**
+ * @param {string} url
+ */
 async function cachedFetch(url, timeout = 10 * ONE_MINUTE) {
     if (CACHE[url]) {
         const { data, ttl } = CACHE[url];
@@ -96,6 +102,9 @@ async function cachedFetch(url, timeout = 10 * ONE_MINUTE) {
     return data;
 }
 
+/**
+ * @param {string} data
+ */
 function parseBody(data) {
     const match = /gp='([^']*)'/.exec(data);
 
