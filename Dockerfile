@@ -5,6 +5,7 @@ COPY package.json yarn.lock ./
 RUN yarn install --frozen-lockfile
 COPY ./public/ ./public/
 COPY ./src/ ./src/
+COPY ./webpack.config.js ./.babelrc ./
 RUN yarn build
 
 # Server

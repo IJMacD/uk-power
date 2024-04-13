@@ -23,6 +23,8 @@ docker push ${LOCAL_REGISTRY}/${REPO}/${APPNAME}:${GIT_TAG}
 
 # helm dependency build --skip-refresh $SCRIPT_DIR/kube/chart/${APPNAME}/
 
+export KUBECONFIG=~/.kube/config.k3d
+
 helm upgrade --install ${APPNAME} \
   $SCRIPT_DIR/kube/chart/${APPNAME}/ \
   --namespace ${APPNAME} --create-namespace \

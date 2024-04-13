@@ -3,7 +3,6 @@
 export APPNAME=uk-power
 export LOCALHOST_NAME=${APPNAME}.localhost
 export TLS_SECRET_NAME=${APPNAME}-cert
-export KUBECONFIG=~/.kube/config.k3d
 export CONTAINER_USER_ID=1001
 export REGISTRY_NAME=docker.io
 export REPO=ijmacd
