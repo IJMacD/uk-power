@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import ukmap from '../img/map.svg';
 import Query from 'ijmacd-query';
 import { Gauge } from './Gauge';
@@ -111,8 +111,9 @@ const interconnects = [
 const App = () => {
   const [updated, setUpdated] = React.useState(null);
   const [sources, setSources] = React.useState([]);
-  const [inputs, setInputs] = React.useState([]);
+  // const [inputs, setInputs] = React.useState([]);
   const [offsets, setOffsets] = React.useState(interconnects.map(_ => 0));
+  const [gaugeScale, setGaugeScale] = useState(3);
 
   React.useEffect(() => {
     const f = () => fetch(API_URL).then(r => r.json()).then(async d => {
@@ -122,10 +123,10 @@ const App = () => {
       const q = new Query({ sources });
 
       const results = await q.run("FROM sources SELECT code, name, value, frequency ORDER BY value DESC", { output: "objects" });
-      const inputs = await q.run("FROM sources WHERE code != 'RENEW' AND code != 'CARBON' AND value > 0 SELECT code, name, value ORDER BY value DESC", { output: "objects" });
+      // const inputs = await q.run("FROM sources WHERE code != 'RENEW' AND code != 'CARBON' AND value > 0 SELECT code, name, value ORDER BY value DESC", { output: "objects" });
 
       setSources(results);
-      setInputs(inputs);
+      // setInputs(inputs);
       setUpdated(d.date);
     });
     f();
@@ -152,8 +153,6 @@ const App = () => {
   }, [sources]);
 
   const demand = sources.find(s => s.code === 'MAINCALC');
-  const renewables = sources.find(s => s.code === 'RENEW');
-  const carbonNeutral = sources.find(s => s.code === 'CARBON');
 
   const frequency = demand ? demand.frequency : TARGET_FREQUENCY;
 
@@ -185,10 +184,16 @@ const App = () => {
         }
       </svg>
       <div style={{ display: "flex", flexDirection: "column", textAlign: "center" }}>
-        <Gauge discrepency={frequencyDiscrepency} />
+        <Gauge discrepency={frequencyDiscrepency} scale={gaugeScale} />
         {frequency} Hz
+        <p>
+          <button onClick={() => setGaugeScale(3)}>3%</button>
+          <button onClick={() => setGaugeScale(1)}>1%</button>
+          <button onClick={() => setGaugeScale(0.3)}>0.3%</button>
+          <button onClick={() => setGaugeScale(0.1)}>0.1%</button>
+        </p>
       </div>
-      <UsageBars inputs={inputs} renewables={renewables} carbonNeutral={carbonNeutral} demand={demand} />
+      <UsageBars sources={sources} />
     </>
   );
 }

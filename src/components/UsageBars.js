@@ -7,24 +7,50 @@ import React from "react";
 /**
  *
  * @param {object} props
- * @param {Source[]} props.inputs
- * @param {Source} props.renewables
- * @param {Source} props.carbonNeutral
- * @param {Source} props.demand
+ * @param {Source[]} props.sources
  * @returns
  */
-export function UsageBars({ inputs, renewables, carbonNeutral, demand }) {
+export function UsageBars({ sources }) {
+    if (!sources.length) {
+        return null;
+    }
+
+    const inputs = sources.filter(s => s.value > 0 && s.code !== "RENEW" && s.code !== "CARBON");
+    const demand = sources.find(s => s.code === 'MAINCALC');
+    const renewables = sources.find(s => s.code === 'RENEW');
+    const carbonNeutral = sources.find(s => s.code === 'CARBON');
+    const outputs = sources.filter(s => s.value < 0 && s.code !== "MAINCALC");
+
+    const totalIn = inputs.reduce((total, s) => total + s.value, 0);
+    const totalOut = (demand ? -demand.value : 0);// + outputs.reduce((total, s) => total + -s.value, 0);
+
+    const SCALE = 25;
 
     return (
-        <div>
+        <div style={{ borderRight: "1px dashed #CCC" }}>
+            <p style={{ textAlign: "right" }}>{totalIn.toFixed(2)} GW</p>
+            {/* <div style={{ width: SCALE * totalIn }} className="source-block">Total In {(totalIn).toFixed(2)} GW</div> */}
             <div style={{ display: "flex" }}>
                 {
-                    inputs.map(s => <div style={{ width: 25 * s.value }} className="source-block" title={`${s.name}: ${s.value}`}>{s.name}</div>)
+                    inputs.map(s => <div style={{ width: SCALE * s.value }} className="source-block" title={`${s.name}: ${s.value}`}>{s.name} {((s.value / totalOut) * 100).toFixed()}%</div>)
                 }
             </div>
-            {renewables && <div style={{ width: 25 * renewables.value }} className="source-block" title={`${renewables.name}: ${renewables.value}`}>{renewables.name}</div>}
-            {renewables && <div style={{ width: 25 * carbonNeutral.value }} className="source-block" title={`${carbonNeutral.name}: ${carbonNeutral.value}`}>{carbonNeutral.name}</div>}
-            {demand && <div style={{ width: 25 * -demand.value }} className="source-block" title={`${demand.name}: ${demand.value}`}>{demand.name}</div>}
+            {renewables && <div style={{ width: SCALE * renewables.value }} className="source-block" title={`${renewables.name}: ${renewables.value}`}>{renewables.name} {((renewables.value / totalOut) * 100).toFixed()}%</div>}
+            {carbonNeutral && <div style={{ width: SCALE * carbonNeutral.value }} className="source-block" title={`${carbonNeutral.name}: ${carbonNeutral.value}`}>{carbonNeutral.name} {((carbonNeutral.value / totalOut) * 100).toFixed()}%</div>}
+            <div style={{ display: "flex", justifyContent: "right" }}>
+                {
+                    outputs.map(s => <div style={{ width: SCALE * -s.value }} className="source-block" title={`${s.name}: ${s.value}`}>{s.name}</div>)
+                }
+            </div>
+            <div style={{ display: "flex" }}>
+                {demand && <div style={{ width: SCALE * -demand.value }} className="source-block" title={`${demand.name}: ${demand.value}`}>{demand.name} {(-demand.value).toFixed(2)} GW</div>}
+                {/* {
+                    outputs.map(s => <div style={{ width: SCALE * -s.value }} className="source-block" title={`${s.name}: ${s.value}`}>{s.name}</div>)
+                } */}
+            </div>
+            {/* <div style={{ width: SCALE * totalOut }} className="source-block">Total Out {(totalOut).toFixed(2)} GW</div> */}
+            {/* <p style={{ textAlign: "right" }}>{totalOut.toFixed(2)} GW</p> */}
+            {/* {demand && <p style={{ textAlign: "right" }}>{(-demand.value).toFixed(2)} GW</p>} */}
         </div>
     )
 }

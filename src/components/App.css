@@ -2,13 +2,14 @@
     display: flex;
     flex-wrap: wrap;
     align-items: flex-end;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }
 
 .source-block {
     height: 25px;
     border-radius: 5px;
     border: 1px solid #00000040;
-    padding: 4px;
+    padding: 4px 0;
     overflow: hidden;
     box-sizing: border-box;
 }
