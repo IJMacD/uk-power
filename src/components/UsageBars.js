@@ -26,8 +26,19 @@ export function UsageBars({ sources }) {
 
     const SCALE = 25;
 
+    const bgSize = SCALE * 10;
+
+    const usageBarsStyle = {
+        borderLeft: "1px solid #333",
+        borderBottom: "1px solid #333",
+        borderRight: "1px dashed #CCC",
+        paddingBottom: "0.5em",
+        backgroundImage: `linear-gradient(to right, transparent, transparent ${bgSize - 1}px, #999 ${bgSize - 1}px, #999)`,
+        backgroundSize: `${bgSize}px`,
+    };
+
     return (
-        <div style={{ borderRight: "1px dashed #CCC" }}>
+        <div style={usageBarsStyle}>
             <p style={{ textAlign: "right" }}>{totalIn.toFixed(2)} GW</p>
             {/* <div style={{ width: SCALE * totalIn }} className="source-block">Total In {(totalIn).toFixed(2)} GW</div> */}
             <div style={{ display: "flex" }}>

@@ -163,6 +163,7 @@ const App = () => {
       <div>
         <p>UK Time: {new Date().toLocaleString("en-GB", { timeZone: "Europe/London" })}</p>
         {updated && <p>Updated: {new Date(updated).toLocaleString("en-GB", { timeZone: "Europe/London" })}</p>}
+        {demand && <p>Grid Frequency: {demand.frequency} Hz</p>}
         <h3>Sources:</h3>
         <ul>
           {
