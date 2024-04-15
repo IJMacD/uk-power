@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Query from 'ijmacd-query';
 import { Gauge } from './Gauge';
 
@@ -15,6 +15,8 @@ const App = () => {
   const [sources, setSources] = React.useState([]);
   // const [inputs, setInputs] = React.useState([]);
   const [gaugeScale, setGaugeScale] = useState(3);
+
+  useRefresh(1000);
 
   React.useEffect(() => {
     const f = () => fetch(API_URL).then(r => r.json()).then(async d => {
@@ -41,11 +43,13 @@ const App = () => {
 
   const frequencyDiscrepency = ((frequency - TARGET_FREQUENCY) / TARGET_FREQUENCY) * 100;
 
+  const dateTimeFormatter = new Intl.DateTimeFormat([], { timeStyle: "long", timeZone: "Europe/London" });
+
   return (
     <>
       <div>
-        <p>UK Time: {new Date().toLocaleString("en-GB", { timeZone: "Europe/London" })}</p>
-        {updated && <p>Updated: {new Date(updated).toLocaleString("en-GB", { timeZone: "Europe/London" })}</p>}
+        <p>UK Time: {dateTimeFormatter.format()}</p>
+        {updated && <p>Updated: {dateTimeFormatter.format(new Date(updated))}</p>}
         {demand && <p>Grid Frequency: {demand.frequency} Hz</p>}
         <h3>Sources:</h3>
         <ul>
@@ -71,3 +75,14 @@ const App = () => {
 }
 
 export default App
+
+/**
+ * @param {number} interval
+ */
+function useRefresh(interval) {
+  const [_, setCounter] = useState(0);
+  useEffect(() => {
+    const id = setInterval(() => setCounter(c => c + 1), interval);
+    return () => clearInterval(id);
+  }, []);
+}
