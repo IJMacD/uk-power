@@ -1,13 +1,16 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Gauge } from './Gauge';
 
 import './App.css';
 import { UsageBars } from './UsageBars';
 import { SourcesMap } from './SourcesMap';
-import { useGridWatch } from './useGridWatch';
-import { useRefresh } from './useRefresh';
+import { useGridWatch } from '../hooks/useGridWatch';
+import { useRefresh } from '../hooks/useRefresh';
+import { LineChart } from './LineChart';
+import { useChartHistory } from '../hooks/useChartHistory';
 
 const TARGET_FREQUENCY = 50;
+export const DEMAND_CODE = "MAINCALC";
 
 const App = () => {
   // const [inputs, setInputs] = React.useState([]);
@@ -15,25 +18,57 @@ const App = () => {
 
   useRefresh(1000);
 
+  const [updated, sources] = useGridWatch();
 
-  const demand = sources.find(s => s.code === 'MAINCALC');
+  const [chartHistory, setChartHistory] = useChartHistory(updated, sources);
 
-  const frequency = demand ? demand.frequency : TARGET_FREQUENCY;
+  const demand = sources.find(s => s.code === DEMAND_CODE);
+
+  const frequency = demand ? (demand.frequency || 0) : TARGET_FREQUENCY;
 
   const frequencyDiscrepency = ((frequency - TARGET_FREQUENCY) / TARGET_FREQUENCY) * 100;
 
   const dateTimeFormatter = new Intl.DateTimeFormat([], { timeStyle: "long", timeZone: "Europe/London" });
+
+  /**
+   * @param {string} code
+   * @param {boolean} checked
+   */
+  function handleChartHistoryChange(code, checked) {
+    if (checked) {
+      setChartHistory(history => [...history, { code, points: [] }]);
+    }
+    else {
+      setChartHistory(history => history.filter(c => c.code !== code));
+    }
+  }
 
   return (
     <>
       <div>
         <p>UK Time: {dateTimeFormatter.format()}</p>
         {updated && <p>Updated: {dateTimeFormatter.format(new Date(updated))}</p>}
-        {demand && <p>Grid Frequency: {demand.frequency} Hz</p>}
+        {demand &&
+          <p>
+            <label>
+              <input type="checkbox" checked={chartHistory.some(c => c.code === "frequency")} onChange={e => handleChartHistoryChange("frequency", e.target.checked)} />
+              {' '}
+              Grid Frequency: {demand.frequency} Hz
+            </label>
+          </p>
+        }
         <h3>Sources:</h3>
         <ul>
           {
-            sources.map(s => <li key={s.code} title={s.code}>{s.name}: {s.value} GW</li>)
+            sources.map(s => (
+              <li key={s.code} title={s.code}>
+                <label>
+                  <input type="checkbox" checked={chartHistory.some(c => c.code === s.code)} onChange={e => handleChartHistoryChange(s.code, e.target.checked)} />
+                  {' '}
+                  {s.name}: {s.value} GW
+                </label>
+              </li>
+            ))
           }
         </ul>
       </div>
@@ -47,6 +82,9 @@ const App = () => {
           <button onClick={() => setGaugeScale(0.3)}>0.3%</button>
           <button onClick={() => setGaugeScale(0.1)}>0.1%</button>
         </p>
+        {
+          chartHistory.map(chartItem => <p key={chartItem.code}>{chartItem.code} <LineChart points={chartItem.points} /></p>)
+        }
       </div>
       <UsageBars sources={sources} />
     </>

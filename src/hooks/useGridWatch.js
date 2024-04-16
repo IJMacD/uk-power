@@ -3,6 +3,18 @@ import Query from 'ijmacd-query';
 
 export const API_URL = process.env.NODE_ENV === "production" ? "/api" : 'https://uk-power.ijmacd.com/api';
 
+/**
+ * @typedef Source
+ * @property {string} code
+ * @property {string} name
+ * @property {number} value
+ * @property {number} [frequency]
+ */
+
+/**
+ *
+ * @returns {[string,Source[]]}
+ */
 export function useGridWatch() {
     const [updated, setUpdated] = React.useState(null);
     const [sources, setSources] = React.useState([]);
