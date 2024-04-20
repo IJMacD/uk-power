@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
  * @template T
  * @param {string} key
  * @param {T|(() => T)} defaultValue
+ * @returns {[T, ((newValueorSetter: T|((oldValue: T) => T)) => void)]}
  */
 export function useSavedState(key, defaultValue) {
     const [state, setState] = useState(() => {

@@ -20,7 +20,9 @@ const App = () => {
 
   const [updated, sources] = useGridWatch();
 
-  const [chartHistory, setChartHistory] = useChartHistory(updated, sources);
+  const chartHistory = useChartHistory(updated, sources);
+
+  const [selectedChartHistory, setSelectedChartHistory] = useSavedState("uk-power.selectedChartHistory", ["frequency"]);
 
   const demand = sources.find(s => s.code === DEMAND_CODE);
 
@@ -36,10 +38,10 @@ const App = () => {
    */
   function handleChartHistoryChange(code, checked) {
     if (checked) {
-      setChartHistory(history => [...history, { code, points: [] }]);
+      setSelectedChartHistory(history => [...history, code]);
     }
     else {
-      setChartHistory(history => history.filter(c => c.code !== code));
+      setSelectedChartHistory(history => history.filter(c => c !== code));
     }
   }
 
@@ -51,7 +53,7 @@ const App = () => {
         {demand &&
           <p>
             <label>
-              <input type="checkbox" checked={chartHistory.some(c => c.code === "frequency")} onChange={e => handleChartHistoryChange("frequency", e.target.checked)} />
+              <input type="checkbox" checked={selectedChartHistory.includes("frequency")} onChange={e => handleChartHistoryChange("frequency", e.target.checked)} />
               {' '}
               Grid Frequency: {demand.frequency} Hz
             </label>
@@ -63,7 +65,7 @@ const App = () => {
             sources.map(s => (
               <li key={s.code} title={s.code}>
                 <label>
-                  <input type="checkbox" checked={chartHistory.some(c => c.code === s.code)} onChange={e => handleChartHistoryChange(s.code, e.target.checked)} />
+                  <input type="checkbox" checked={selectedChartHistory.includes(s.code)} onChange={e => handleChartHistoryChange(s.code, e.target.checked)} />
                   {' '}
                   {s.name}: {s.value} GW
                 </label>
@@ -83,7 +85,7 @@ const App = () => {
           <button onClick={() => setGaugeScale(0.1)}>0.1%</button>
         </p>
         {
-          chartHistory.map(chartItem => <p key={chartItem.code}>{chartItem.code} <LineChart points={chartItem.points} /></p>)
+          selectedChartHistory.map(chartItemCode => <p key={chartItemCode}>{chartItemCode} <LineChart points={chartHistory.find(c => c.code === chartItemCode)?.points || []} /></p>)
         }
       </div>
       <UsageBars sources={sources} />
