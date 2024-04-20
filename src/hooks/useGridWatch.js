@@ -1,7 +1,9 @@
 import React from 'react';
 import Query from 'ijmacd-query';
 
-export const API_URL = process.env.NODE_ENV === "production" ? "/api" : 'https://uk-power.ijmacd.com/api';
+const API_URL = process.env.NODE_ENV === "production" ? "/api" : 'https://uk-power.ijmacd.com/api';
+
+export const DEMAND_CODE = "MAINCALC";
 
 /**
  * @typedef Source

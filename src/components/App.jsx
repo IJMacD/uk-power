@@ -4,16 +4,15 @@ import { Gauge } from './Gauge';
 import './App.css';
 import { UsageBars } from './UsageBars';
 import { SourcesMap } from './SourcesMap';
-import { useGridWatch } from '../hooks/useGridWatch';
+import { DEMAND_CODE, useGridWatch } from '../hooks/useGridWatch';
 import { useRefresh } from '../hooks/useRefresh';
 import { LineChart } from './LineChart';
 import { useChartHistory } from '../hooks/useChartHistory';
-import { useSavedState } from '../../useSavedState';
+import { useSavedState } from '../hooks/useSavedState';
 
 const TARGET_FREQUENCY = 50;
-export const DEMAND_CODE = "MAINCALC";
 
-const App = () => {
+export default function App() {
   const [gaugeScale, setGaugeScale] = useSavedState("uk-power.gaugeScale", 3);
 
   useRefresh(1000);
@@ -75,24 +74,23 @@ const App = () => {
         </ul>
       </div>
       <SourcesMap sources={sources} />
-      <div style={{ display: "flex", flexDirection: "column", textAlign: "center" }}>
-        <Gauge discrepency={frequencyDiscrepency} scale={gaugeScale} />
-        {frequency} Hz
-        <p>
-          <button onClick={() => setGaugeScale(3)}>3%</button>
-          <button onClick={() => setGaugeScale(1)}>1%</button>
-          <button onClick={() => setGaugeScale(0.3)}>0.3%</button>
-          <button onClick={() => setGaugeScale(0.1)}>0.1%</button>
-        </p>
+      <div style={{ display: "flex", flex: 1, flexWrap: "wrap", textAlign: "center" }}>
+        <div style={{ width: 300 }}>
+          <Gauge discrepency={frequencyDiscrepency} scale={gaugeScale} />
+          {frequency} Hz
+          <p>
+            <button onClick={() => setGaugeScale(3)}>3%</button>
+            <button onClick={() => setGaugeScale(1)}>1%</button>
+            <button onClick={() => setGaugeScale(0.3)}>0.3%</button>
+            <button onClick={() => setGaugeScale(0.1)}>0.1%</button>
+          </p>
+        </div>
         {
-          selectedChartHistory.map(chartItemCode => <p key={chartItemCode}>{chartItemCode} <LineChart points={chartHistory.find(c => c.code === chartItemCode)?.points || []} /></p>)
+          selectedChartHistory.map(chartItemCode => <p key={chartItemCode} style={{ width: 300 }}>{chartItemCode}<br /><LineChart points={chartHistory.find(c => c.code === chartItemCode)?.points || []} style={{ width: 300 }} /></p>)
         }
       </div>
       <UsageBars sources={sources} />
     </>
   );
 }
-
-export default App
-
 

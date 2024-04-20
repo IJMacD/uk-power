@@ -1,7 +1,8 @@
-const http = require('http');
-const https = require('https');
-const path = require("path");
-const fs = require('fs');
+import http from 'http';
+import https from 'https';
+import path from "path";
+import fs from 'fs';
+import { fileURLToPath } from 'url';
 const port = process.env.PORT || 8000;
 
 const ONE_MINUTE = 60 * 1000;
@@ -14,12 +15,18 @@ const server = http.createServer((request, response) => {
         return sendDemand(response);
     }
 
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = path.dirname(__filename);
+
     let filename = path.join(__dirname, "public", request.url);
     if (!fs.existsSync(filename) || fs.lstatSync(filename).isDirectory()) {
         filename = path.join(__dirname, "public", "index.html");
     }
 
-    if (filename.match(/\.svg$/)) {
+    if (filename.match(/\.js$/)) {
+        response.setHeader("Content-Type", "text/javascript");
+    }
+    else if (filename.match(/\.svg$/)) {
         response.setHeader("Content-Type", "image/svg+xml");
     }
 

@@ -43,14 +43,14 @@ export function UsageBars({ sources }) {
             {/* <div style={{ width: SCALE * totalIn }} className="source-block">Total In {(totalIn).toFixed(2)} GW</div> */}
             <div style={{ display: "flex" }}>
                 {
-                    inputs.map(s => <div style={{ width: SCALE * s.value }} className="source-block" title={`${s.name}: ${s.value}`}>{s.name} {((s.value / totalOut) * 100).toFixed()}%</div>)
+                    inputs.map(s => <div key={s.code} style={{ width: SCALE * s.value }} className="source-block" title={`${s.name}: ${s.value}`}>{s.name} {((s.value / totalOut) * 100).toFixed()}%</div>)
                 }
             </div>
             {renewables && <div style={{ width: SCALE * renewables.value }} className="source-block" title={`${renewables.name}: ${renewables.value}`}>{renewables.name} {((renewables.value / totalOut) * 100).toFixed()}%</div>}
             {carbonNeutral && <div style={{ width: SCALE * carbonNeutral.value }} className="source-block" title={`${carbonNeutral.name}: ${carbonNeutral.value}`}>{carbonNeutral.name} {((carbonNeutral.value / totalOut) * 100).toFixed()}%</div>}
             <div style={{ display: "flex", justifyContent: "right" }}>
                 {
-                    outputs.map(s => <div style={{ width: SCALE * -s.value }} className="source-block" title={`${s.name}: ${s.value}`}>{s.name}</div>)
+                    outputs.map(s => <div key={s.code} style={{ width: SCALE * -s.value }} className="source-block" title={`${s.name}: ${s.value}`}>{s.name}</div>)
                 }
             </div>
             <div style={{ display: "flex" }}>

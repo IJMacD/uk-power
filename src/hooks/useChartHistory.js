@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { DEMAND_CODE } from "../components/App";
+import { DEMAND_CODE } from "./useGridWatch";
 
 const TARGET_FREQUENCY = 50;
 
