@@ -2,10 +2,23 @@ import { useEffect, useState } from "react";
 import { useDeepArray } from "./useDeepArray";
 import { DEMAND_CODE } from "../components/App";
 
+const TARGET_FREQUENCY = 50;
+
+/**
+ * @typedef HistoryRecord
+ * @property {string} code
+ * @property {[number, number][]} points
+ */
+
+/**
+ * @param {string} updated
+ * @param {import("./useGridWatch").Source[]} sources
+ * @returns {[HistoryRecord[], (newHistory: HistoryRecord[]|((oldHistory: HistoryRecord[]) => HistoryRecord[])) => void]}
+ */
 export function useChartHistory(updated, sources) {
     const [chartHistory, setChartHistory] = useState(() => [{
         code: "frequency",
-        points: [],
+        points: /** @type {[Number,number][]} */([]),
     }]);
 
     const recordedHistory = useDeepArray(chartHistory.map(h => h.code));
@@ -19,6 +32,7 @@ export function useChartHistory(updated, sources) {
                 return history;
             }
 
+            /** @type {{code: string, points: [number, number][]}[]} */
             const out = [];
 
             for (const h of history) {
@@ -36,8 +50,8 @@ export function useChartHistory(updated, sources) {
                 if (h.code === "frequency") {
                     // find the required source record
                     const s = sources.find(s => s.code === DEMAND_CODE);
-                    if (s) {
-                        out.push({ code: h.code, points: [...h.points, [d, s.frequency]] });
+                    if (s && s.frequency) {
+                        out.push({ code: h.code, points: [...h.points, [d, s.frequency / TARGET_FREQUENCY - 1]] });
                     }
                     else {
                         // We couldn't find it for some reason, make sure we preserve the data

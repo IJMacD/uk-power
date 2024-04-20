@@ -5,6 +5,7 @@ const fs = require('fs');
 const port = process.env.PORT || 8000;
 
 const ONE_MINUTE = 60 * 1000;
+const CACHE_TIME = 2.5 * ONE_MINUTE;
 
 const server = http.createServer((request, response) => {
     console.log(new Date().toISOString() + " " + request.url);
@@ -31,7 +32,7 @@ const server = http.createServer((request, response) => {
  * @param {import("http").ServerResponse} response
  */
 async function sendDemand(response) {
-    const body = await cachedFetch('https://gridwatch.co.uk/Demand', 5 * ONE_MINUTE);
+    const body = await cachedFetch('https://gridwatch.co.uk/Demand', CACHE_TIME);
     const rawdata = parseBody(body);
 
     /* lgen:

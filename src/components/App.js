@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { Gauge } from './Gauge';
 
 import './App.css';
@@ -8,13 +8,13 @@ import { useGridWatch } from '../hooks/useGridWatch';
 import { useRefresh } from '../hooks/useRefresh';
 import { LineChart } from './LineChart';
 import { useChartHistory } from '../hooks/useChartHistory';
+import { useSavedState } from '../../useSavedState';
 
 const TARGET_FREQUENCY = 50;
 export const DEMAND_CODE = "MAINCALC";
 
 const App = () => {
-  // const [inputs, setInputs] = React.useState([]);
-  const [gaugeScale, setGaugeScale] = useState(3);
+  const [gaugeScale, setGaugeScale] = useSavedState("uk-power.gaugeScale", 3);
 
   useRefresh(1000);
 

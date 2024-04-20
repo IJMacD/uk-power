@@ -22,6 +22,8 @@ export function LineChart({ points, xRange = ONE_HOUR }) {
     const width = 300;
     const height = 150;
 
+    const g = 10;
+
     const xScale = width / xRange;
     const yScale = height / yRange;
 
@@ -33,7 +35,7 @@ export function LineChart({ points, xRange = ONE_HOUR }) {
     }).join(" ");
 
     return (
-        <svg viewBox={`0 0 ${width} ${height}`}>
+        <svg viewBox={`${-g} ${-g} ${width + 2 * g} ${height + g * 2}`}>
             <path d={d} fill="none" stroke="red" />
             <path d={`M 0 0 V ${height}`} fill="none" stroke="black" />
             <path d={`M 0 ${height - (0 - minY) * yScale} H ${width}`} fill="none" stroke="black" />
