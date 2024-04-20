@@ -16,7 +16,7 @@ export function LineChart({ points, xRange = ONE_HOUR, ...otherProps }) {
         return null;
     }
 
-    const filteredPoints = points.filter(p => p[0] > maxX - xRange);
+    const filteredPoints = points.filter(p => p[0] >= maxX - xRange);
     const minY = Math.min(0, ...filteredPoints.map(p => p[1]));
     const maxY = Math.max(0, ...filteredPoints.map(p => p[1]));
     const yRange = maxY - minY;

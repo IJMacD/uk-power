@@ -7,7 +7,7 @@ import { SourcesMap } from './SourcesMap';
 import { DEMAND_CODE, useGridWatch } from '../hooks/useGridWatch';
 import { useRefresh } from '../hooks/useRefresh';
 import { LineChart } from './LineChart';
-import { useChartHistory } from '../hooks/useChartHistory';
+import { useFrequencyHistory } from '../hooks/useFrequencyHistory';
 import { useSavedState } from '../hooks/useSavedState';
 
 const TARGET_FREQUENCY = 50;
@@ -17,9 +17,9 @@ export default function App() {
 
   useRefresh(1000);
 
-  const [updated, sources] = useGridWatch();
+  const [updated, sources, history] = useGridWatch();
 
-  const chartHistory = useChartHistory(updated, sources);
+  const frequencyHistory = useFrequencyHistory(updated, sources);
 
   const [selectedChartHistory, setSelectedChartHistory] = useSavedState("uk-power.selectedChartHistory", ["frequency"]);
 
@@ -86,7 +86,19 @@ export default function App() {
           </p>
         </div>
         {
-          selectedChartHistory.map(chartItemCode => <p key={chartItemCode} style={{ width: 300 }}>{chartItemCode}<br /><LineChart points={chartHistory.find(c => c.code === chartItemCode)?.points || []} style={{ width: 300 }} /></p>)
+          selectedChartHistory.map(chartItemCode => {
+            const points = chartItemCode === "frequency" ?
+              frequencyHistory :
+              history.find(h => h.code === chartItemCode)?.points.filter(p => p[1] > 0) || [];
+
+            return (
+              <p key={chartItemCode} style={{ width: 300 }}>
+                {chartItemCode}
+                <br />
+                <LineChart points={points} style={{ width: 300 }} />
+              </p>
+            );
+          })
         }
       </div>
       <UsageBars sources={sources} />
