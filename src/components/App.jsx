@@ -12,8 +12,11 @@ import { useSavedState } from '../hooks/useSavedState';
 
 const TARGET_FREQUENCY = 50;
 
+const ONE_HOUR = 60 * 60 * 1000;
+
 export default function App() {
   const [gaugeScale, setGaugeScale] = useSavedState("uk-power.gaugeScale", 3);
+  const [lineChartScale, setLineChartScale] = useSavedState("uk-power.lineChartScale", ONE_HOUR);
 
   useRefresh(1000);
 
@@ -78,7 +81,7 @@ export default function App() {
         <div style={{ width: 300 }}>
           <Gauge discrepency={frequencyDiscrepency} scale={gaugeScale} />
           {frequency} Hz
-          <p>
+          <p style={{ width: 300, margin: 0 }}>
             <button onClick={() => setGaugeScale(3)}>3%</button>
             <button onClick={() => setGaugeScale(1)}>1%</button>
             <button onClick={() => setGaugeScale(0.3)}>0.3%</button>
@@ -86,16 +89,25 @@ export default function App() {
           </p>
         </div>
         {
+          selectedChartHistory.length > 0 &&
+          <p style={{ width: 300, margin: 0 }}>
+            <button onClick={() => setLineChartScale(ONE_HOUR)}>1h</button>
+            <button onClick={() => setLineChartScale(3 * ONE_HOUR)}>3h</button>
+            <button onClick={() => setLineChartScale(12 * ONE_HOUR)}>12h</button>
+            <button onClick={() => setLineChartScale(24 * ONE_HOUR)}>24h</button>
+          </p>
+        }
+        {
           selectedChartHistory.map(chartItemCode => {
             const points = chartItemCode === "frequency" ?
               frequencyHistory :
               history.find(h => h.code === chartItemCode)?.points.filter(p => p[1] > 0) || [];
 
             return (
-              <p key={chartItemCode} style={{ width: 300 }}>
+              <p key={chartItemCode} style={{ width: 300, margin: 0 }}>
                 {chartItemCode}
                 <br />
-                <LineChart points={points} style={{ width: 300 }} />
+                <LineChart points={points} xRange={lineChartScale} yGridMajor={5} style={{ width: 300 }} />
               </p>
             );
           })
