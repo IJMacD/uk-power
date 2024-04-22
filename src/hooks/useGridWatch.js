@@ -44,7 +44,10 @@ export function useGridWatch() {
 
             setUpdated(d.date);
 
-            const historyStart = +parseDate(d.lgr[0][9], "Europe/London");
+            // const historyStart = +parseDate(d.lgr[0][9], "Europe/London");
+            // Date is UTC all year round.
+            // This means it cuts off the first hour of a BST day
+            const historyStart = +new Date(d.lgr[0][9].replace(" ", "T") + "+00:00");
 
             /** @type {[string, ...number[]][]} */
             const historySources = d.lgt[0];

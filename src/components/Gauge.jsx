@@ -3,11 +3,11 @@ import React from "react";
 /**
  *
  * @param {object} props
- * @param {number} props.discrepency In percent
+ * @param {number} props.value In percent
  * @param {number} props.scale Max scale in percent
  * @returns
  */
-export function Gauge({ discrepency = 0, scale = 3 }) {
+export function Gauge({ value, scale = 3 }) {
     return (
         <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -51,7 +51,10 @@ export function Gauge({ discrepency = 0, scale = 3 }) {
                 <g fill="none" stroke="#000" strokeLinecap="round" strokeWidth={0.26}>
                     <path d="M44.068 23.416h3.985M15.818 4.826l2.036 3.455m17.49-.016L37.31 4.83" />
                 </g>
-                <path d="m26.591 3.941 1.569 19.475-1.522 2.391-1.616-2.39z" fill="#F00" style={{ transition: "transform 1s" }} transform={`rotate(${discrepency / scale * 90} 26.56 23.74)`} />
+                {
+                    typeof value === "number" && !isNaN(value) &&
+                    <path d="m26.591 3.941 1.569 19.475-1.522 2.391-1.616-2.39z" fill="#F00" style={{ transition: "transform 1s" }} transform={`rotate(${value / scale * 90} 26.56 23.74)`} />
+                }
                 <g
                     strokeWidth={0.26}
                     fontFamily="'Eras Bold ITC'"
@@ -65,6 +68,7 @@ export function Gauge({ discrepency = 0, scale = 3 }) {
                         y={4.428}
                         style={{
                             lineHeight: 1.1,
+                            fontSize: "1.2pt"
                         }}
                     >
                         <tspan x={15.243} y={4.428}>
@@ -77,6 +81,7 @@ export function Gauge({ discrepency = 0, scale = 3 }) {
                         y={23.61}
                         style={{
                             lineHeight: 1.1,
+                            fontSize: "1.2pt"
                         }}
                     >
                         <tspan x={4.35} y={23.61}>
@@ -89,9 +94,11 @@ export function Gauge({ discrepency = 0, scale = 3 }) {
                         y={4.428}
                         style={{
                             lineHeight: 1.1,
+                            fontSize: "1.2pt"
                         }}
+                        textAnchor="start"
                     >
-                        <tspan x={42.231} y={4.428}>
+                        <tspan x={38.231} y={4.428}>
                             {`+${(scale / 3).toFixed(1)}%`}
                         </tspan>
                     </text>
@@ -101,9 +108,11 @@ export function Gauge({ discrepency = 0, scale = 3 }) {
                         y={23.61}
                         style={{
                             lineHeight: 1.1,
+                            fontSize: "1.2pt",
                         }}
+                        textAnchor="start"
                     >
-                        <tspan x={52.504} y={23.61}>
+                        <tspan x={48.504} y={23.61}>
                             {`+${scale}%`}
                         </tspan>
                     </text>

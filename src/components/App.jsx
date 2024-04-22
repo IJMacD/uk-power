@@ -17,6 +17,7 @@ const ONE_HOUR = 60 * 60 * 1000;
 export default function App() {
   const [gaugeScale, setGaugeScale] = useSavedState("uk-power.gaugeScale", 3);
   const [lineChartScale, setLineChartScale] = useSavedState("uk-power.lineChartScale", ONE_HOUR);
+  const [lineChartPercent, setLineChartPercent] = useSavedState("uk-power.lineChartPercent", false);
 
   useRefresh(1000);
 
@@ -28,7 +29,7 @@ export default function App() {
 
   const demand = sources.find(s => s.code === DEMAND_CODE);
 
-  const frequency = demand ? (demand.frequency || 0) : TARGET_FREQUENCY;
+  const frequency = demand ? (demand.frequency || NaN) : TARGET_FREQUENCY;
 
   const frequencyDiscrepency = ((frequency - TARGET_FREQUENCY) / TARGET_FREQUENCY) * 100;
 
@@ -79,8 +80,8 @@ export default function App() {
       <SourcesMap sources={sources} />
       <div style={{ display: "flex", flex: 1, flexWrap: "wrap", textAlign: "center" }}>
         <div style={{ width: 300 }}>
-          <Gauge discrepency={frequencyDiscrepency} scale={gaugeScale} />
-          {frequency} Hz
+          <Gauge value={frequencyDiscrepency} scale={gaugeScale} />
+          {frequency > 0 && `${frequency} Hz`}
           <p style={{ width: 300, margin: 0 }}>
             <button onClick={() => setGaugeScale(3)}>3%</button>
             <button onClick={() => setGaugeScale(1)}>1%</button>
@@ -91,23 +92,35 @@ export default function App() {
         {
           selectedChartHistory.length > 0 &&
           <p style={{ width: 300, margin: 0 }}>
-            <button onClick={() => setLineChartScale(ONE_HOUR)}>1h</button>
-            <button onClick={() => setLineChartScale(3 * ONE_HOUR)}>3h</button>
-            <button onClick={() => setLineChartScale(12 * ONE_HOUR)}>12h</button>
-            <button onClick={() => setLineChartScale(24 * ONE_HOUR)}>24h</button>
+            <button onClick={() => setLineChartScale(ONE_HOUR)} disabled={lineChartScale === ONE_HOUR}>1h</button>
+            <button onClick={() => setLineChartScale(3 * ONE_HOUR)} disabled={lineChartScale === 3 * ONE_HOUR}>3h</button>
+            <button onClick={() => setLineChartScale(6 * ONE_HOUR)} disabled={lineChartScale === 6 * ONE_HOUR}>6h</button>
+            <button onClick={() => setLineChartScale(12 * ONE_HOUR)} disabled={lineChartScale === 12 * ONE_HOUR}>12h</button>
+            <button onClick={() => setLineChartScale(24 * ONE_HOUR)} disabled={lineChartScale === 24 * ONE_HOUR}>24h</button>
+            <br />
+            <button onClick={() => setLineChartPercent(false)} disabled={!lineChartPercent}>GW</button>
+            <button onClick={() => setLineChartPercent(true)} disabled={lineChartPercent}>%</button>
           </p>
         }
         {
           selectedChartHistory.map(chartItemCode => {
-            const points = chartItemCode === "frequency" ?
-              frequencyHistory :
-              history.find(h => h.code === chartItemCode)?.points.filter(p => p[1] > 0) || [];
+            let points;
+            if (chartItemCode === "frequency") {
+              points = frequencyHistory;
+            }
+            else if (lineChartPercent) {
+              const demandPoints = history.find(h => h.code === DEMAND_CODE)?.points.filter(p => p[1] > 0) || [];
+              points = history.find(h => h.code === chartItemCode)?.points.filter(p => p[1] > 0).map((p, i) => [p[0], 100 * p[1] / demandPoints[i][1]]) || [];
+            }
+            else {
+              points = history.find(h => h.code === chartItemCode)?.points.filter(p => p[1] > 0) || [];
+            }
 
             return (
               <p key={chartItemCode} style={{ width: 300, margin: 0 }}>
                 {chartItemCode}
                 <br />
-                <LineChart points={points} xRange={lineChartScale} yGridMajor={5} style={{ width: 300 }} />
+                <LineChart points={points} xRange={lineChartScale} yGridMajor={10} style={{ width: 300 }} />
               </p>
             );
           })
