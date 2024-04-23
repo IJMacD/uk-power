@@ -8,6 +8,7 @@ export REGISTRY_NAME=docker.io
 export REPO=ijmacd
 export PROJECTS="uk-power"
 export GIT_TAG=$(git describe --tags)
+export LOCAL_KUBECONFIG=~/.kube/config.k3d
 export LOCAL_REGISTRY_PORT=5111
 export LOCAL_REGISTRY_NAME=k3d-registry.localhost
 export LOCAL_REGISTRY=${LOCAL_REGISTRY_NAME}:${LOCAL_REGISTRY_PORT}

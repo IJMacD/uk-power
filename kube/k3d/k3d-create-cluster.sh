@@ -7,6 +7,8 @@ set -o pipefail
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 source ${SCRIPT_DIR}/../../vars.sh
 
+export KUBECONFIG=$LOCAL_KUBECONFIG
+
 sudo useradd -u $CONTAINER_USER_ID ${APPNAME} || echo "User ${APPNAME} already exists."
 
 # Ensure we're using local Ubuntu docker
