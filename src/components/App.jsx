@@ -120,7 +120,7 @@ export default function App() {
               <p key={chartItemCode} style={{ width: 300, margin: 0 }}>
                 {chartItemCode}
                 <br />
-                <LineChart points={points} xRange={lineChartScale} yGridMajor={10} style={{ width: 300 }} />
+                <LineChart points={points} xRange={lineChartScale} yGridMajor={chartItemCode === "frequency" ? 0.003 : 10} style={{ width: 300 }} />
               </p>
             );
           })

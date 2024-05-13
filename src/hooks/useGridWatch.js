@@ -47,22 +47,27 @@ export function useGridWatch() {
             // const historyStart = +parseDate(d.lgr[0][9], "Europe/London");
             // Date is UTC all year round.
             // This means it cuts off the first hour of a BST day
-            const historyStart = +new Date(d.lgr[0][9].replace(" ", "T") + "+00:00");
+            const historyStartToday = +new Date(d.lgr[0][9].replace(" ", "T") + "+00:00");
+            const historyStartYesterday = +new Date(d.lgr[1][9].replace(" ", "T") + "+00:00");
 
             /** @type {[string, ...number[]][]} */
-            const historySources = d.lgt[0];
+            const historySourcesToday = d.lgt[0];
+            /** @type {[string, ...number[]][]} */
+            const historySourcesYesterday = d.lgt[1];
 
             // 10-minute interval
             const delta = 10 * 60 * 1000;
 
             /** @type {{code: string, points: [number, number][]}[]} */
-            const history = historySources.map(source => {
-                const [code, ...values] = source;
+            const history = historySourcesToday.map((sourceToday, i) => {
+                const [codeToday, ...valuesToday] = sourceToday;
+                const [codeYesterday, ...valuesYesterday] = historySourcesYesterday[i];
 
+                const values = [...valuesYesterday, ...valuesToday];
 
                 return {
-                    code,
-                    points: values.map((v, i) => [historyStart + i * delta, v]),
+                    code: codeToday,
+                    points: values.map((v, i) => [historyStartYesterday + i * delta, v]),
                 };
             });
 

@@ -52,7 +52,7 @@ const interconnects = [
     },
     {
         // Jutland
-        code: "G_INTVKL",
+        code: "INTVKL",
         path: "M450 350 L320 370",
         width: 4,
     },
