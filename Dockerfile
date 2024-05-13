@@ -1,5 +1,5 @@
 # Frontend build step
-FROM node:20 AS react-build
+FROM node:20-alpine AS react-build
 WORKDIR /app
 COPY package.json yarn.lock ./
 RUN yarn install --frozen-lockfile
