@@ -31,6 +31,8 @@ spec:
               name: index-dev
               subPath: index.html
           {{- end }}
+          resources:
+            {{- toYaml .Values.web.resources | nindent 12 }}
       {{- if .Values.web.local.enabled }}
       volumes:
         - name: index-dev

@@ -7,3 +7,9 @@ web:
     enabled: false
   local:
     enabled: false
+  resources:
+    requests:
+      cpu: 5m
+      memory: 31Mi
+    limits:
+      memory: 31Mi
